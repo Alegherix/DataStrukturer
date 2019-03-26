@@ -16,21 +16,12 @@ class GuessTheNumber{
         guessNumber = ThreadLocalRandom.current().nextInt(upperBound)
     }
 
-    fun printGuess(){
-        print("Is the number: $guessNumber \n1) Higer \n2) Lower \n3) Correct \n")
-    }
-
     fun takeInput(){
-        val input = Integer.parseInt(readLine())
-
-        try {
-            when(input){
-                1,2 -> calculateNewGuess(input)
-                3 -> gameShouldEnd = true
-            }
-        }
-        catch (e : Exception){
-            println("Please type a number from 1-3")
+        val input = try { Integer.parseInt(readLine()) } catch (e : Exception) {-1}
+        when(input){
+            1,2 -> calculateNewGuess(input)
+            3 -> gameShouldEnd = true
+            else -> println("Please enter a number from 1-3")
         }
     }
 
@@ -47,13 +38,11 @@ class GuessTheNumber{
     fun initializeGame(guess : Int = Int.MAX_VALUE){
         createRandomNumber(guess)
         while (!gameShouldEnd){
-            printGuess()
+            print("Is the number: $guessNumber \n1) Higer \n2) Lower \n3) Correct \n")
             takeInput()
         }
         println("Congratulations it took $guessAttempts attempts")
     }
-
-
 }
 
 fun main() {
