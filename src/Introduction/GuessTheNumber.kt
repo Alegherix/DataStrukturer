@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom
 
 class GuessTheNumber{
 
-    var guessNumber : Int = 0
+    var guessNumber = 0
     var guessAttempts = 0
     var lowerBound = 0
     var upperBound = 0
