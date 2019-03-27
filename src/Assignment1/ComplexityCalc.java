@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Complexity {
+public class ComplexityCalc {
 
-    private final double baseCase = 100.0;
+    private final double BASE_CASE = 100.0;
     private List<Double> values = Arrays.asList(101.0, 200.0, 10000.0, 100000.0);
 
     private static Function<Double, Double> log = value -> (Math.log(value)/Math.log(2));
@@ -27,7 +27,7 @@ public class Complexity {
 
     public void calculate(Function<Double, Double> function, String functionName){
         // Percentage change = (v2-v1)/v1 * 100
-        double v1 = function.apply(baseCase);
+        double v1 = function.apply(BASE_CASE);
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
@@ -45,19 +45,14 @@ public class Complexity {
         System.out.println("--------------------------");
     }
 
-
     public static void main(String[] args) {
-
-        Complexity complexity = new Complexity();
-        complexity.calculate(log, "Logarithmic");
-        complexity.calculate(n, "Linear");
-        complexity.calculate(log2n, "Linearithmic");
-        complexity.calculate(squared, "Quadratic");
-        complexity.calculate(cubed, "Cubic");
-        complexity.calculate(exponential,"Exponential");
-
-
+        ComplexityCalc complexityCalc = new ComplexityCalc();
+        complexityCalc.calculate(log, "Logarithmic");
+        complexityCalc.calculate(n, "Linear");
+        complexityCalc.calculate(log2n, "Linearithmic");
+        complexityCalc.calculate(squared, "Quadratic");
+        complexityCalc.calculate(cubed, "Cubic");
+        complexityCalc.calculate(exponential,"Exponential");
     }
-
 }
 
