@@ -12,13 +12,12 @@ public class Complexity {
     private final double baseCase = 100.0;
     private List<Double> values = Arrays.asList(101.0, 200.0, 10000.0, 100000.0);
 
-    private static Function<Double, Double> log2n = value -> value * (Math.log(value)/Math.log(2));
+    private static Function<Double, Double> log = value -> (Math.log(value)/Math.log(2));
     private static Function<Double, Double> n = Double::doubleValue;
-    private static Function<Double, Double> nLog2N = value -> Math.pow(value, 2) * (Math.log(value)/Math.log(2));
+    private static Function<Double, Double> log2n = value -> value * (Math.log(value)/Math.log(2));
     private static Function<Double, Double> squared = value -> Math.pow(value, 2);
     private static Function<Double, Double> cubed = value -> Math.pow(value, 3);
     private static Function<Double, Double> exponential = value -> Math.pow(2, value);
-
 
     public List<Double> applyFunctionToValue(Function<Double, Double> function){
         return values.stream()
@@ -32,7 +31,7 @@ public class Complexity {
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
-        System.out.println("For the "+ functionName + " function");
+        System.out.println("For the " + functionName + " function");
         for(Double v2 : applyFunctionToValue(function)){
             double change = ((v2-v1)/v1);
             if(change<1.0){
@@ -48,13 +47,15 @@ public class Complexity {
 
 
     public static void main(String[] args) {
+
         Complexity complexity = new Complexity();
-        complexity.calculate(log2n, "Logarithmic");
+        complexity.calculate(log, "Logarithmic");
         complexity.calculate(n, "Linear");
-        complexity.calculate(nLog2N, "Linearithmic");
+        complexity.calculate(log2n, "Linearithmic");
         complexity.calculate(squared, "Quadratic");
         complexity.calculate(cubed, "Cubic");
         complexity.calculate(exponential,"Exponential");
+
 
     }
 
