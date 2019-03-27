@@ -26,12 +26,13 @@ public class Complexity {
                 .collect(Collectors.toList());
     }
 
-    public void calculate(Function<Double, Double> function){
+    public void calculate(Function<Double, Double> function, String functionName){
         // Percentage change = (v2-v1)/v1 * 100
         double v1 = function.apply(baseCase);
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
+        System.out.println("For the "+ functionName + " function");
         for(Double v2 : applyFunctionToValue(function)){
             double change = ((v2-v1)/v1);
             if(change<1.0){
@@ -43,20 +44,17 @@ public class Complexity {
             }
         }
         System.out.println("--------------------------");
-
     }
-
 
 
     public static void main(String[] args) {
         Complexity complexity = new Complexity();
-
-        complexity.calculate(log2n);
-        complexity.calculate(n);
-        complexity.calculate(nLog2N);
-        complexity.calculate(squared);
-        complexity.calculate(cubed);
-        complexity.calculate(exponential);
+        complexity.calculate(log2n, "Logarithmic");
+        complexity.calculate(n, "Linear");
+        complexity.calculate(nLog2N, "Linearithmic");
+        complexity.calculate(squared, "Quadratic");
+        complexity.calculate(cubed, "Cubic");
+        complexity.calculate(exponential,"Exponential");
 
     }
 
