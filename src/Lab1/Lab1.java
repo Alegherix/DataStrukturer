@@ -3,10 +3,37 @@ package Lab1;
 public class Lab1 {
     /** Sorting algorithms **/
 
+    /**
+     * Steps
+     * 1) Select the first unsorted elem
+     * 2) Swap all the other elements to the right,
+     * 3) Place our unsorted element to the right position
+     * 4) Move marker to next elem and repeat
+     * @param array
+     */
     // Insertion sort.
      public static void insertionSort(int[] array) {
-     throw new UnsupportedOperationException();
+         int n = array.length;
+
+         for(int i = 1; i < n; i++){
+             int unsortedElem = array[i];
+             int iteration = i - 1;
+
+             // Uses a while loop cause loop iterations is unknown
+             // If value in the array on current iteration, IE greatest elem in array > Unsorted Elem -> Then move to the right to make a hole
+             // Then update value for holding iteration, so that it also checks the previous values and compares to unsorted elem.
+             while (iteration >= 0 && array[iteration] > unsortedElem){
+                 array[iteration+1] = array[iteration];
+                 iteration = iteration -1;
+             }
+             // Place unsorted element to the correct Position.
+             array[iteration + 1] = unsortedElem;
+         }
      }
+
+
+
+
 
     // Quicksort.
      public static void quickSort(int[] array) {
