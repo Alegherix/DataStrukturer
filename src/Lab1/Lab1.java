@@ -17,17 +17,17 @@ public class Lab1 {
 
          for(int i = 1; i < n; i++){
              int unsortedElem = array[i];
-             int iteration = i - 1;
+             int marker = i - 1;
 
              // Uses a while loop cause loop iterations is unknown
              // If value in the array on current iteration, IE greatest elem in array > Unsorted Elem -> Then move to the right to make a hole
-             // Then update value for holding iteration, so that it also checks the previous values and compares to unsorted elem.
-             while (iteration >= 0 && array[iteration] > unsortedElem){
-                 array[iteration+1] = array[iteration];
-                 iteration = iteration -1;
+             // Then update value for holding iteration, so that it also checks the previous values and compares to unsorted elem
+             while (marker >= 0 && array[marker] > unsortedElem){
+                 array[marker+1] = array[marker];
+                 marker = marker -1;
              }
-             // Place unsorted element to the correct Position.
-             array[iteration + 1] = unsortedElem;
+             // Place unsorted element to the position where unsorted >= array[marker] && unsorted < array[marker + 2]
+             array[marker + 1] = unsortedElem;
          }
      }
 
