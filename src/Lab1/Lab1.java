@@ -32,41 +32,69 @@ public class Lab1 {
      }
 
 
-
-
-
     // Quicksort.
      public static void quickSort(int[] array) {
-     throw new UnsupportedOperationException();
+        quickSort(array, 0, array.length-1);
      }
 
-    // Quicksort part of an array
+    /**
+     * Usage: Recursily quicksort the array
+     * 1) If elements still left to sort
+     * 2) Extract new pivot
+     * 3) Quicksort left
+     * 4) Quicksort right
+     */
      private static void quickSort(int[] array, int begin, int end) {
+         if(begin < end +1){
+             int pivot = partition(array, begin, end);
+             quickSort(array, begin, pivot - 1);
+             quickSort(array, pivot + 1, end);
+         }
      }
 
-    // Partition part of an array, and return the index where the pivot
-    // ended up.
+    /**
+     * Usage: Partition the array and return index of pivot element
+     * 1) Create a pointer 1 Index to the right of pivot
+     * 2) Traverse each item in partition
+     * 3) If element < pivot? swap with marker and increment marker
+     * 4) Finally swap pivot back to it's correct position, and return pivot index.
+     */
      private static int partition(int[] array, int begin, int end) {
-     throw new UnsupportedOperationException();
+         // Creating the pointer
+         int pointer = begin + 1;
+
+         //Traverse each elem in partition
+         for (int i = pointer; i <= end ; i++) {
+             //Compare element with pivot, if elem < pivot, swap elem with elem to the right of pivot, and increment marker.
+             if(array[i] < array[begin]){
+                 swap(array, i, pointer++);
+             }
+         }
+         //Swap back pivot to correct place
+         swap(array, begin, pointer-1);
+         return pointer-1;
      }
 
     // Swap two elements in an array
      private static void swap(int[] array, int i, int j) {
-     int x = array[i];array[i] = array[j];array[j] = x;
+        int x = array[i];
+        array[i] = array[j];
+        array[j] = x;
      }
+
 
     // Mergesort.
      public static int[] mergeSort(int[] array) {
-     throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
      }
 
     // Mergesort part of an array
      private static int[] mergeSort(int[] array, int begin, int end) {
-     throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
      }
 
     // Merge two sorted arrays into one
      private static int[] merge(int[] left, int[] right) {
-     throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
      }
 }
