@@ -1,7 +1,4 @@
 package Lab1;
-
-import java.util.Arrays;
-
 public class Lab1 {
     /** Sorting algorithms **/
 
@@ -21,7 +18,6 @@ public class Lab1 {
              int unsortedElem = array[i];
              int pointer = i - 1;
 
-             // Uses a while loop cause loop iterations is unknown
              // If value in the array on current iteration, IE greatest elem in array > Unsorted Elem -> Then move to the right to make a hole
              // Then update value for holding iteration, so that it also checks the previous values and compares to unsorted elem
              while (pointer >= 0 && array[pointer] > unsortedElem){
@@ -135,21 +131,20 @@ public class Lab1 {
              // If both Arrays have elements left
              if(leftPointer < left.length && rightPointer < right.length){
 
+                 //val in left array lowest
                  if(left[leftPointer] < right[rightPointer]){
-                     //Merge left val to result and increment both pointers
                      resultArray[resultPointer++] = left[leftPointer++];
                  }
                  else{
-                     // merge right val to result and increment both pointers
                      resultArray[resultPointer++] = right[rightPointer++];
                  }
              }
-             // If only elem in left array
+             //only values remaining is in left array
              else if(leftPointer < left.length){
                  resultArray[resultPointer++] = left[leftPointer++];
              }
-             // If only elem in right array
-             else if(rightPointer < right.length){
+             //only values remaining is in right array
+             else{
                  resultArray[resultPointer++] = right[rightPointer++];
              }
          }
