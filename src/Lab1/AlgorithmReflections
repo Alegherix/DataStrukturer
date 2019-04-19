@@ -1,0 +1,106 @@
+The first conclusion that comes to mind is that fact that whenever we have a sorted array, such that it is fully sorted
+it's always better to use the Insertion sort(As this is a best case scenario).
+The reasoning is that in this case the Insertion sort is O(n), Whereas both Quicksort and Mergesort has a best time complexity of O(n log n).
+It also seems like Insertion sort is more efficent with smaller data sets up to around the 10000 entry mark, when compared to the Quicksort with 95% sorted list cases.
+
+If there's no information about the data set, we should probably assume that the data is in random order.
+If this is the case, this also means that the pivot point we choose for the Quicksort will be random
+(As the worst case would be the Greatest/Lowest elem in the list). And therefor not worst Case, with this in mind
+QuickSort seems like a great match for sorting all kind of arrays(Both size and Partially sorted, Excluding fully sorted arrays).
+However on closer inspection, It seems like at some point the MergeSort will eventually Overtake Quicksort at being the better Algorithm for sorting Bigger randomly organized data sets.
+
+(0.000418 - 0.000060) / 0.000060 = 5,97
+(0.001450 - 0.000211) / 0.000211 = 4.66
+(0.017519 - 0.003656) / 0.003656 = 3,79
+...
+...
+(152.104700 - 78.842000) / 78.842000 = 0,93
+
+As the size of the dataset increases the advantage of sorting randomized data for Quicksort vs Mergesort decreases.
+
+Conclusion:
+The final conclusion is that in the event that we have a very small sample data set, of ~30 elements, in random order or not
+we use Insertion Sort as the O(n^2) effect hasn't grown very big yet. For all arrays with sorted data,
+Insertion sort is also a prefered choice due to it's best case scenario.
+
+If we work with data sets that is random or possibly somewhat sorted in the size of a few million, Quicksort is a great Algorithm for sorting the array,
+The main pitfall seems to be if we choose the pivot element as the first/last and that is the highest/lowest element, the partitioning
+of the arrays will be the most unevenly undistributed, and we will end up with a O(n^2) case.
+
+If we work with Huge data samples of Millions(Not calculated yet), it seems like Mergesort would be the go to Algorithm,
+Aswell as if the case is either fully random, or fully sorted. This due to the fact that both the Best and Worst case scenario
+for the Merge sort is O(n log n). In this Scenario, Insertion sort would be totally out of the question, due to the Randomness scenario
+Aswell as Quicksort due to the Fully sorted scenario, where both of these would give O(n^2) performance, where MergeSort would give O(n log n).
+
+
+Performance:
+
+Arrays of length 10
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |       0.000033 |       0.000021 |       0.000020
+Quicksort      |       0.000060 |       0.000072 |       0.000072
+Merge sort     |       0.000418 |       0.000435 |       0.000436
+
+Arrays of length 30
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |       0.000129 |       0.000061 |       0.000062
+Quicksort      |       0.000211 |       0.000374 |       0.000372
+Merge sort     |       0.001450 |       0.001469 |       0.001469
+
+Arrays of length 100
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |       0.001279 |       0.000266 |       0.000187
+Quicksort      |       0.000922 |       0.003090 |       0.003548
+Merge sort     |       0.005222 |       0.005321 |       0.005400
+
+Arrays of length 300
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |       0.011201 |       0.001206 |       0.000549
+Quicksort      |       0.003656 |       0.011755 |       0.028112
+Merge sort     |       0.017519 |       0.017777 |       0.017995
+
+Arrays of length 1000
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |       0.101932 |       0.009877 |       0.001612
+Quicksort      |       0.026316 |       0.041175 |       0.290561
+Merge sort     |       0.085088 |       0.065549 |       0.067031
+
+Arrays of length 3000
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |       0.906264 |       0.064169 |       0.004645
+Quicksort      |       0.139985 |       0.146577 |       2.464986
+Merge sort     |       0.296089 |       0.216263 |       0.211353
+
+Arrays of length 10000
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |       9.752150 |       0.717096 |       0.015434
+Quicksort      |       0.541747 |       0.567856 |      25.100300
+Merge sort     |       1.088272 |       0.763920 |       0.752873
+
+Arrays of length 30000
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |      87.659100 |       6.100167 |       0.045844
+Quicksort      |       1.810860 |       1.986722 | STACK OVERFLOW
+Merge sort     |       3.563560 |       2.454825 |       2.474800
+
+Arrays of length 100000
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |    1164.903300 |      66.044500 |       0.152460
+Quicksort      |       6.663700 |       7.231500 | STACK OVERFLOW
+Merge sort     |      12.892600 |       8.700250 |       8.655450
+
+Arrays of length 1 000 000
+=================================================================
+Algorithm      |         Random |     95% sorted |         Sorted
+Insertion sort |   98430.744000 |    6689.455100 |       1.554900
+Quicksort      |      78.842000 |      92.466300 | STACK OVERFLOW
+Merge sort     |     152.104700 |      98.072900 |      91.006900
