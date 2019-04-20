@@ -1,5 +1,3 @@
-package Lab2;
-
 public class Bid {
 	final public String name;
 	final public int bid;

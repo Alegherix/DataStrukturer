@@ -1,9 +1,7 @@
-package Lab2;
-
 import java.util.*;
 
 // A priority queue.
-public class PriorityQueue<E> {
+public class PriorityQueue<E> implements Iterator<E>{
 	private ArrayList<E> heap = new ArrayList<E>();
 	private Comparator<E> comparator;
 	private Map<E, Integer> elemPosMap = new HashMap<>();
@@ -20,12 +18,13 @@ public class PriorityQueue<E> {
 	// Adds an item to the priority queue.
 	public void add(E x)
 	{
-//		System.out.println("Inserting elem: " + x + "\n");
-
-		// Lägger till elementet i slutet av array Listan
+		// Adds the element at the last of the list
 		heap.add(x);
 
-		// Sifta de uppåt tills dess korrekta plats.
+		// Put the element into the hashMap with it's Position aswell
+		elemPosMap.put(x, heap.size()-1);
+
+		// Sift new Element upwards
 		siftUp(heap.size()- 1);
 	}
 
@@ -44,40 +43,48 @@ public class PriorityQueue<E> {
 		if (size() == 0)
 			throw new NoSuchElementException();
 
-		//Sätter sista elementet till Högst upp
+		// Remove first elem from map, now that we know we can remove it safely.
+		elemPosMap.remove(minimum());
+
+		//put the last elem at the top so that we can safely remove the smallest element
 		heap.set(0, heap.get(heap.size()-1));
 
-		//Tar bort det sista elementet i listan -> Som är det som var höst upp i Priority queuen
+		// Updates the now top placed elem to it's proper position in the HashMap aswell
+		elemPosMap.replace(minimum(), 0);
+
+		//Removes the lowest element in Priority queue, which now resides at last position
 		heap.remove(heap.size()-1);
 
-		// Om det finns element kvar, -> Sifta elementet vid index 0, Nedåt tills den hamnar i korrekt plats.
+		// If elements still remaining, send the element at the top of the queue for possible sifting downwards.
 		if (heap.size() > 0) siftDown(0);
+
 	}
 
 
+	/**
+	 * Used for updating the queue to
+	 * @param oldE - The old element that should be updated
+	 * @param newE - The new element that should be used instead
+	 */
 	public void updateQueue(E oldE, E newE){
-		if(!heap.contains(oldE)) throw new NoSuchElementException();
+		if(!elemPosMap.containsKey(oldE)) throw new NoSuchElementException();
 
-		// Hitta de gamla elementets index
-		int index = heap.indexOf(oldE);
+		// Find the index of old element
+		int index = elemPosMap.get(oldE);
 
+		// Replace the old key with the new key - Keep the same Value
+		elemPosMap.put(newE, index);
+
+		// Update the heap to use the new element at the same index spot aswell
+		heap.set(index, newE);
+
+		// Compare old elem to new, to check wheter we should try to sift up or down
 		if(comparator.compare(oldE, newE) > 0){
-			System.out.println("We should sift up");
-			heap.set(index, newE);
 			siftUp(index);
 		}
 		else if(comparator.compare(oldE, newE) < 0){
-			System.out.println("We should sift down");
-			heap.set(index, newE);
 			siftDown(index);
 		}
-
-
-		// Hitta Det gamla elementets index i heapen
-		// Jämför det nya med det som finns för att veta om vi ska sifta upp eller ned
-		// Ersätt det gamla elementet med det nya.
-		// Börja göra eventuell Sifting
-
 	}
 
 
@@ -85,9 +92,6 @@ public class PriorityQueue<E> {
 	// siftUp(index) fixes the invariant if the element at 'index' may
 	// be less than its parent, but all other elements are correct.
 	private void siftUp(int index) {
-
-		// TODO: 2019-04-19 Behöver tänka ut vart vi ska placera denna Om här, eller i while loopen
-		// TODO: 2019-04-19 Behöver tänka ut smartare sätt att uppdatera Index över nya placeringen för Elementet vi vill ska gå uppåt
 
 		// Skapa referens till värdet vi möjligtvis vill sifta uppåt
 		E insertedValue = heap.get(index);
@@ -99,14 +103,22 @@ public class PriorityQueue<E> {
 			// Om objektet har mindre värde, skicka det uppåt via att swappa dessa värden
 			if(comparator.compare(parentVal, insertedValue) > 0){
 //				System.out.print("The current binary heap representation is: ");
-				heap.forEach(s -> System.out.print(s + " "));
-				System.out.println();
+//				heap.forEach(s -> System.out.print(s + " "));
+//				System.out.println();
 //				System.out.println("Switching the inserted Element: " + insertedValue);
+
+
 				int parentIndex = parent(index);
 
 				// Swappa nu ut objekten
 				heap.set(parentIndex, insertedValue);
 				heap.set(index, parentVal);
+
+				//Uppdaterar värdet i mappen
+				// FIXME: 2019-04-20 -> Möjligtvis att denna mapDel är skev
+				elemPosMap.replace(parentVal, index);
+				elemPosMap.replace(insertedValue, parentIndex);
+
 
 				// Byt index, så att vi kan switcha med rätt.
 				index = parentIndex;
@@ -127,6 +139,8 @@ public class PriorityQueue<E> {
 	// be greater than its children, but all other elements are correct.
 	private void siftDown(int index) {
 
+		// TODO -- Fixa mappen korrekt
+
 		// Hämta objektet via indexet ifrån heapen
 		E value = heap.get(index);
 
@@ -136,10 +150,6 @@ public class PriorityQueue<E> {
 			// Hämta index för de olika barnen
 			int left    = leftChild(index);
 			int right   = rightChild(index);
-
-
-			// Work out whether the left or right child is smaller.
-			// Start out by assuming the left child is smaller...
 
 			// Assigna ett index värde, börja med vänster
 			int childIndex = left;
@@ -160,14 +170,23 @@ public class PriorityQueue<E> {
 
 			// Jämför det ursprungliga objektets värde med barn värdet
 			// Om barnets värde är mindre än objektets värde, fortsätt skicka objektet nedåt.
+			// Uppdatera även Mappen för att reflektera förändringarna
 			if (comparator.compare(value, childValue) > 0) {
+
+				//Uppdatera platsen på heapen
 				heap.set(index, childValue);
+
+				// Byt plats på objekten i mappen
+				elemPosMap.replace(childValue, index);
+				elemPosMap.replace(value, childIndex);
 				index = childIndex;
-			} else break;
+			}
+			else break;
 		}
 
 		heap.set(index, value);
 	}
+
 
 	// Helper functions for calculating the children and parent of an index.
 	private final int leftChild(int parentIndex) {
@@ -180,5 +199,15 @@ public class PriorityQueue<E> {
 
 	private final int parent(int childIndex) {
 		return (childIndex-1)/2;
+	}
+
+	@Override
+	public boolean hasNext() {
+		return heap.size()>0;
+	}
+
+	@Override
+	public E next() {
+		return minimum();
 	}
 }
