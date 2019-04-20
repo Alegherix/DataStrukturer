@@ -18,7 +18,7 @@ public class Bid {
 
 		Bid bid = (Bid) obj;
 
-		return this.name.equals(bid.name) && this.bid==bid.bid;
+		return this.name.equals(bid.name);
 	}
 
 	public String toString(){

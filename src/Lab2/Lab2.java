@@ -6,12 +6,15 @@ import java.util.*;
 public class Lab2 {
 
 	public static String pureMain(String[] commands) {
-		// TODO: declaration of two priority queues
-		PriorityQueue<Bid> sell_pq = new PriorityQueue<>(new BuyerComperator());
-		PriorityQueue<Bid> buy_pq = new PriorityQueue<Bid>(((o1, o2) -> 0));
-
-
 		StringBuilder sb = new StringBuilder();
+
+		// Declaring Comparators
+		Comparator<Bid> buyComperator = (o1, o2) -> Integer.compare(o2.bid, o1.bid);
+		Comparator<Bid> sellComperator = Comparator.comparingInt(o -> o.bid);
+
+		// Passes Comparator of higestBidder to front of queue for buyers, and lowest amount for sellers
+		PriorityQueue<Bid> sell_pq = new PriorityQueue<>(sellComperator);
+		PriorityQueue<Bid> buy_pq = new PriorityQueue<>(buyComperator);
 
 		// Tar in en fil via dess namn, och börjar parsea köp/sälj kommandon
 		for(int line_no=0; line_no<commands.length; line_no++){
@@ -28,25 +31,49 @@ public class Lab2 {
 			//Parsea de olika delarna ur strängen
 			String name = getName(line_no, parts);
 			String action = getAction(line_no, parts[1], name);
-			int price = parsePrice(line_no, parts);
+			int price = parsePrice(line_no, parts[2]);
+			int sPrice = parsePrice(line_no, parts[3]);
 
-			if( action.equals("K") ) {
-				// TODO: add new buy bid
-			} else if( action.equals("S") ) {
-				// TODO: add new sell bid
-			} else if( action.equals("NK") ){
-				// TODO: update existing buy bid. use parts[3].
-			} else if( action.equals("NS") ){
-				// TODO: update existing sell bid. use parts[3].
-			} else {
-				throw new RuntimeException(
-						"line " + line_no + ": invalid action");
+			switch (action){
+				case "K":
+					buy_pq.add(new Bid(name, price));
+					break;
+				case "S":
+					sell_pq.add(new Bid(name, price));
+					break;
+				case "NK":
+					buy_pq.updateQueue(new Bid(name, price), new Bid(name, sPrice));
+					break;
+				case "NS":
+					sell_pq.updateQueue(new Bid(name, price), new Bid(name, sPrice));
+					break;
+					default:
+						throw new RuntimeException("line " + line_no + ": invalid action");
 			}
+//			if( action.equals("K") ) {
+//				// TODO: add new buy bid
+//			} else if( action.equals("S") ) {
+//				// TODO: add new sell bid
+//			} else if( action.equals("NK") ){
+//				// TODO: update existing buy bid. use parts[3].
+//			} else if( action.equals("NS") ){
+//				// TODO: update existing sell bid. use parts[3].
+//			} else {
+//				throw new RuntimeException(
+//						"line " + line_no + ": invalid action");
+//			}
 
 			if( sell_pq.size() == 0 || buy_pq.size() == 0 ){
 				continue;
 			}
-			
+
+			/*
+			else if(buy_pq.minimum().equals(sell_pq.minimum())){
+				buy_pq.deleteMinimum();
+				sell_pq.deleteMinimum();
+			}
+			*/
+
 			// TODO:
 			// compare the bids of highest priority from each of
 			// each priority queues.
@@ -83,11 +110,12 @@ public class Lab2 {
 		return parts[0];
 	}
 
-	private static int parsePrice(int line_no, String[] parts) {
+	private static int parsePrice(int line_no, String partToParce) {
 		int price;
 		try {
-			price = Integer.parseInt(parts[2]);
-		} catch(NumberFormatException e){
+			price = Integer.parseInt(partToParce);
+		}
+		catch(NumberFormatException e){
 			throw new RuntimeException(
 					"line " + line_no + ": invalid price");
 		}
