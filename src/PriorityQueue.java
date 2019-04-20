@@ -1,5 +1,11 @@
 import java.util.*;
 
+
+/**
+ * HashMaps put, get is Amortized O(1)
+ * @param <E>
+ */
+
 // A priority queue.
 public class PriorityQueue<E> implements Iterator<E>{
 	private ArrayList<E> heap = new ArrayList<E>();
@@ -10,26 +16,36 @@ public class PriorityQueue<E> implements Iterator<E>{
 		this.comparator = comparator;
 	}
 
+
 	// Returns the size of the priority queue.
+	// O(1) -> size() seems to be incremented as a variable under the hood of a ArrayList
+	// If however it's calculated by traversing the Collection then returning it's O(n)
 	public int size() {
 		return heap.size();
 	}
 
-	// Adds an item to the priority queue.
+
+	/**
+	 *
+	 * @param x - The element to att to the Priority queue
+	 */
 	public void add(E x)
 	{
 		// Adds the element at the last of the list
 		heap.add(x);
 
-		// Put the element into the hashMap with it's Position aswell
+		// Put the element into the HashMap
 		elemPosMap.put(x, heap.size()-1);
 
 		// Sift new Element upwards
 		siftUp(heap.size()- 1);
 	}
 
-	// Returns the smallest item in the priority queue.
-	// Throws NoSuchElementException if empty.
+
+	/**
+	 *  O(1) -> Min is always as top so Constant
+	 * @return - The element with the highest priority
+	 */
 	public E minimum() {
 		if (size() == 0)
 			throw new NoSuchElementException();
@@ -46,13 +62,13 @@ public class PriorityQueue<E> implements Iterator<E>{
 		// Remove first elem from map, now that we know we can remove it safely.
 		elemPosMap.remove(minimum());
 
-		//put the last elem at the top so that we can safely remove the smallest element
+		//Put the last elem at the top so that we can safely remove the smallest element
 		heap.set(0, heap.get(heap.size()-1));
 
-		// Updates the now top placed elem to it's proper position in the HashMap aswell
+		// Updates HashMap value for the now top place element
 		elemPosMap.replace(minimum(), 0);
 
-		//Removes the lowest element in Priority queue, which now resides at last position
+		//Removes the Top priority element in queue, which now resides at last position
 		heap.remove(heap.size()-1);
 
 		// If elements still remaining, send the element at the top of the queue for possible sifting downwards.
@@ -93,45 +109,33 @@ public class PriorityQueue<E> implements Iterator<E>{
 	// be less than its parent, but all other elements are correct.
 	private void siftUp(int index) {
 
-		// Skapa referens till värdet vi möjligtvis vill sifta uppåt
 		E insertedValue = heap.get(index);
 
-		// Medan vi har en förälder, samt OM förälderns värde är större än värdet vi insertar
+		// While we have a parent, try to sift up
 		while (parent(index)>=0){
+
+			// Assign parent for comparission
 			E parentVal = heap.get(parent(index));
 
-			// Om objektet har mindre värde, skicka det uppåt via att swappa dessa värden
+			// If element has higher priority, bubble it up via swaping position
 			if(comparator.compare(parentVal, insertedValue) > 0){
-//				System.out.print("The current binary heap representation is: ");
-//				heap.forEach(s -> System.out.print(s + " "));
-//				System.out.println();
-//				System.out.println("Switching the inserted Element: " + insertedValue);
-
-
 				int parentIndex = parent(index);
 
-				// Swappa nu ut objekten
+				// Swap the elements
 				heap.set(parentIndex, insertedValue);
 				heap.set(index, parentVal);
 
-				//Uppdaterar värdet i mappen
-				// FIXME: 2019-04-20 -> Möjligtvis att denna mapDel är skev
+				//Update the HashMap to represent swapping
 				elemPosMap.replace(parentVal, index);
 				elemPosMap.replace(insertedValue, parentIndex);
 
-
-				// Byt index, så att vi kan switcha med rätt.
+				//Update index for next iteration of loop
 				index = parentIndex;
-//				System.out.println("Current index of newVal is: " + index);
 			}
 			else{
 				break;
 			}
-//			System.out.print("The final binary heap representation is: ");
-//			heap.forEach(s -> System.out.print(s + " "));
-//			System.out.println(" ");
 		}
-//		System.out.println("-----------------------");
 	}
      
 	// Sifts a node down.
@@ -139,27 +143,26 @@ public class PriorityQueue<E> implements Iterator<E>{
 	// be greater than its children, but all other elements are correct.
 	private void siftDown(int index) {
 
-		// TODO -- Fixa mappen korrekt
-
-		// Hämta objektet via indexet ifrån heapen
 		E value = heap.get(index);
 
 		// Stop when the node is a leaf.
 		while (leftChild(index) < heap.size()) {
 
-			// Hämta index för de olika barnen
+			// Get indexes for the children
 			int left    = leftChild(index);
 			int right   = rightChild(index);
 
-			// Assigna ett index värde, börja med vänster
+			// Assign a childIndex, start with left
 			int childIndex = left;
 
-			// Hämta barnvärdet, via vänster först
+			// Get childElement, start with left
 			E childValue = heap.get(left);
 
 			// Om det finns ett höger värde, Assigna även detta objektet
 			// Jämför de båda objektens värden
 			// Assigna sedan om childIndex, och childValue till det som faktiskt är minst
+
+			//If a right
 			if (right < heap.size()) {
 				E rightValue = heap.get(right);
 				if (comparator.compare(childValue, rightValue) > 0) {
@@ -201,11 +204,16 @@ public class PriorityQueue<E> implements Iterator<E>{
 		return (childIndex-1)/2;
 	}
 
+
+	//	  O(1) -> size() seems to be incremented as a variable under the hood of a ArrayList,
+	//	  IF however it's calculated by traversing then returning it's O(n)
 	@Override
 	public boolean hasNext() {
-		return heap.size()>0;
+		return size()>0;
 	}
 
+
+	// O(1) -> Min is always as top so Constant
 	@Override
 	public E next() {
 		return minimum();

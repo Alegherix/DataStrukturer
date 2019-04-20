@@ -104,10 +104,10 @@ public class Lab2 {
 
 
 	/**
-	 * Used for parcing action I.E Buy/Sell or Update
+	 * Used for parsing action I.E Buy/Sell or Update
 	 * @param line_no - Line number used for Debugging the stacktrace
-	 * @param part
-	 * @param name
+	 * @param part - String representing the name to use
+	 * @param name - String used for null Check
 	 * @return
 	 */
 	private static String parseAction(int line_no, String part, String name) {
@@ -120,7 +120,7 @@ public class Lab2 {
 	/**
 	 * Used for parsing the name or throwing Exception
 	 * @param line_no - Line number used for Debugging the stacktrace
-	 * @param parts
+	 * @param parts - String array used for checking that we're not parsing data wrong I.E >4 || <2 elements in array
 	 * @return
 	 */
 	private static String parseName(int line_no, String[] parts) {
@@ -133,7 +133,7 @@ public class Lab2 {
 	/**
 	 * Used for parcing the price or throwing an Exception
 	 * @param line_no - Line number used for Debugging the stacktrace
-	 * @param partToParce
+	 * @param partToParce - The string that should represent price
 	 * @return
 	 */
 	private static int parsePrice(int line_no, String partToParce) {
