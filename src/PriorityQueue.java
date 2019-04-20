@@ -2,8 +2,7 @@ import java.util.*;
 
 
 /**
- * HashMaps put, get is Amortized O(1)
- * @param <E>
+ *
  */
 
 // A priority queue.
@@ -17,21 +16,23 @@ public class PriorityQueue<E> implements Iterator<E>{
 	}
 
 
-	// Returns the size of the priority queue.
-	// O(1) -> size() seems to be incremented as a variable under the hood of a ArrayList
-	// If however it's calculated by traversing the Collection then returning it's O(n)
+	/**
+	 * O(1) -> size() is running at Constant time.
+	 * @return
+	 */
 	public int size() {
 		return heap.size();
 	}
 
 
 	/**
-	 *
+	 * add -> amortized O(1)
+	 * put -> O(1)
+	 * O(log n) -> Sifting up is what defines Big O for this method
 	 * @param x - The element to att to the Priority queue
 	 */
 	public void add(E x)
 	{
-		// Adds the element at the last of the list
 		heap.add(x);
 
 		// Put the element into the HashMap
@@ -53,8 +54,15 @@ public class PriorityQueue<E> implements Iterator<E>{
 		return heap.get(0);
 	}
 
-	// Removes the smallest item in the priority queue.
-	// Throws NoSuchElementException if empty.
+	/**
+	 * Removes highest priority element
+	 * Time Complexity:
+	 * remove -> O(1)
+	 * set -> O(1)
+	 * replace -> O(1)
+	 * O(log n) -> Sifting down is what defines Big O for this method
+	 */
+
 	public void deleteMinimum() {
 		if (size() == 0)
 			throw new NoSuchElementException();
@@ -78,7 +86,12 @@ public class PriorityQueue<E> implements Iterator<E>{
 
 
 	/**
-	 * Used for updating the queue to
+	 * Updates Queue and Map with a new element
+	 * containsKey -> O(1)
+	 * put -> O(1)
+	 * get -> O(1)
+	 * set -> O(1)
+	 * O(log n) -> The sifting is what defines the O for this method
 	 * @param oldE - The old element that should be updated
 	 * @param newE - The new element that should be used instead
 	 */
@@ -104,9 +117,16 @@ public class PriorityQueue<E> implements Iterator<E>{
 	}
 
 
-	// Sifts a node up.
-	// siftUp(index) fixes the invariant if the element at 'index' may
-	// be less than its parent, but all other elements are correct.
+
+	/**
+	 * Sifts a node up
+	 * get -> O(1)
+	 * set -> O(1)
+	 * replace -> O(1)
+	 * Best case Scenario -> O(1) == element is placed in order and should not be reprioritzed
+	 * Worst case scenario -> O(log n) -> when element have to be sifted up all the way to the root
+	 * @param index - Index of element in heap to possibly sift upwards.
+	 */
 	private void siftUp(int index) {
 
 		E insertedValue = heap.get(index);
@@ -137,10 +157,18 @@ public class PriorityQueue<E> implements Iterator<E>{
 			}
 		}
 	}
-     
-	// Sifts a node down.
-	// siftDown(index) fixes the invariant if the element at 'index' may
-	// be greater than its children, but all other elements are correct.
+
+
+	/**
+	 * Sifts a node down
+	 * get -> O(1)
+	 * compare -> O(1), Comparing bid, which has int as underlying data structure, Could be greater if other compare implementation is used
+	 * set -> O(1)
+	 * replace -> O(1)
+	 * Best case Scenario -> O(1) == element is placed in order and should not be reprioritzed
+	 * Worst case scenario -> O(log n) == when element have to be sifted all the way down to the leaf
+	 * @param index - Index of element in head to possibly sift downwards
+	 */
 	private void siftDown(int index) {
 
 		E value = heap.get(index);
@@ -156,37 +184,31 @@ public class PriorityQueue<E> implements Iterator<E>{
 			int childIndex = left;
 
 			// Get childElement, start with left
-			E childValue = heap.get(left);
+			E childElem = heap.get(left);
 
-			// Om det finns ett höger värde, Assigna även detta objektet
-			// Jämför de båda objektens värden
-			// Assigna sedan om childIndex, och childValue till det som faktiskt är minst
-
-			//If a right
+			//If a right value exist, compare if and assign the proper childIndex, and ChildElem
 			if (right < heap.size()) {
 				E rightValue = heap.get(right);
-				if (comparator.compare(childValue, rightValue) > 0) {
+				if (comparator.compare(childElem, rightValue) > 0) {
 					childIndex = right;
-					childValue = rightValue;
+					childElem = rightValue;
 				}
 			}
 
-			// Jämför det ursprungliga objektets värde med barn värdet
-			// Om barnets värde är mindre än objektets värde, fortsätt skicka objektet nedåt.
-			// Uppdatera även Mappen för att reflektera förändringarna
-			if (comparator.compare(value, childValue) > 0) {
+			// Compare the elem with child elem, if elem has lower prio, send it down and update map to reflect changes
+			if (comparator.compare(value, childElem) > 0) {
 
-				//Uppdatera platsen på heapen
-				heap.set(index, childValue);
+				//Update place on the heap
+				heap.set(index, childElem);
 
-				// Byt plats på objekten i mappen
-				elemPosMap.replace(childValue, index);
+				//Reflect changes in the HashMap
+				elemPosMap.replace(childElem, index);
 				elemPosMap.replace(value, childIndex);
+
 				index = childIndex;
 			}
 			else break;
 		}
-
 		heap.set(index, value);
 	}
 
@@ -205,15 +227,20 @@ public class PriorityQueue<E> implements Iterator<E>{
 	}
 
 
-	//	  O(1) -> size() seems to be incremented as a variable under the hood of a ArrayList,
-	//	  IF however it's calculated by traversing then returning it's O(n)
+	/**
+	 * O(1)
+	 * @return - Boolean wheter or not there's still elements in the heap
+	 */
 	@Override
 	public boolean hasNext() {
 		return size()>0;
 	}
 
 
-	// O(1) -> Min is always as top so Constant
+	/**
+	 * O(1) -> Minimum element is Constant
+	 * @return - Next element in the heap
+	 */
 	@Override
 	public E next() {
 		return minimum();
