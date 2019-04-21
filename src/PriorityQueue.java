@@ -1,11 +1,19 @@
 import java.util.*;
 
-
 /**
+ * Source for Time Complexity of ArrayList operations: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
+ * " The size, isEmpty, get, set, iterator, and listIterator operations run in constant time. The add operation runs in amortized constant time,
+ *   that is, adding n elements requires O(n) time. All of the other operations run in linear time (roughly speaking). "
  *
+ * Source for Time Complexity of HashMap operations: https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html
+ * " This implementation provides constant-time performance for the basic operations (get and put),
+ *   assuming the hash function disperses the elements properly among the buckets."
+ *
+ * 	~~Class Invariant~~
+ * 	The class invariant for a binary heap is that each child has to be greater than it's parent (In the case of a Min Heap),
+ * 	and viceversa for Max Heaps.
  */
 
-// A priority queue.
 public class PriorityQueue<E> implements Iterator<E>{
 	private ArrayList<E> heap = new ArrayList<E>();
 	private Comparator<E> comparator;
@@ -33,6 +41,8 @@ public class PriorityQueue<E> implements Iterator<E>{
 	 */
 	public void add(E x)
 	{
+		assert invariant();
+
 		heap.add(x);
 
 		// Put the element into the HashMap
@@ -40,6 +50,8 @@ public class PriorityQueue<E> implements Iterator<E>{
 
 		// Sift new Element upwards
 		siftUp(heap.size()- 1);
+
+		assert invariant();
 	}
 
 
@@ -56,7 +68,6 @@ public class PriorityQueue<E> implements Iterator<E>{
 
 	/**
 	 * Removes highest priority element
-	 * Time Complexity:
 	 * remove -> O(1)
 	 * set -> O(1)
 	 * replace -> O(1)
@@ -66,6 +77,8 @@ public class PriorityQueue<E> implements Iterator<E>{
 	public void deleteMinimum() {
 		if (size() == 0)
 			throw new NoSuchElementException();
+
+		assert invariant();
 
 		// Remove first elem from map, now that we know we can remove it safely.
 		elemPosMap.remove(minimum());
@@ -81,6 +94,8 @@ public class PriorityQueue<E> implements Iterator<E>{
 
 		// If elements still remaining, send the element at the top of the queue for possible sifting downwards.
 		if (heap.size() > 0) siftDown(0);
+
+		assert invariant();
 
 	}
 
@@ -98,6 +113,8 @@ public class PriorityQueue<E> implements Iterator<E>{
 	public void updateQueue(E oldE, E newE){
 		if(!elemPosMap.containsKey(oldE)) throw new NoSuchElementException();
 
+		assert invariant();
+
 		// Find the index of old element
 		int index = elemPosMap.get(oldE);
 
@@ -114,6 +131,8 @@ public class PriorityQueue<E> implements Iterator<E>{
 		else if(comparator.compare(oldE, newE) < 0){
 			siftDown(index);
 		}
+
+		assert invariant();
 	}
 
 
@@ -121,6 +140,7 @@ public class PriorityQueue<E> implements Iterator<E>{
 	/**
 	 * Sifts a node up
 	 * get -> O(1)
+	 * compare -> O(1), Comparing bid, which has int as underlying data structure, Could be greater if other compare implementation is used
 	 * set -> O(1)
 	 * replace -> O(1)
 	 * Best case Scenario -> O(1) == element is placed in order and should not be reprioritzed
@@ -213,15 +233,48 @@ public class PriorityQueue<E> implements Iterator<E>{
 	}
 
 
-	// Helper functions for calculating the children and parent of an index.
+	/**
+	 * Invariant that checks that each child must be greater than it's parent(Min Heap) or viceversa (Max Heap),
+	 * aswell as checking the corresponding map entries.
+	 * @return - Boolean of wheter or not the invariant holds
+	 */
+	private boolean invariant(){
+		for (int i = 0; i < heap.size(); i++) {
+
+			E parent = heap.get(parent(i));
+			E child = heap.get(i);
+
+			if(comparator.compare(parent, child)>0 || (elemPosMap.get(parent) > elemPosMap.get(child))){
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	/**
+	 * O(1)
+	 * @param parentIndex - Index of parent
+	 * @return index of Left child
+	 */
 	private final int leftChild(int parentIndex) {
 		return 2*parentIndex+1;
 	}
 
+	/**
+	 * O(1)
+	 * @param parentIndex - Index of parent
+	 * @return index of Right child
+	 */
 	private final int rightChild(int parentIndex) {
 		return 2*parentIndex+2;
 	}
 
+	/**
+	 * O(1)
+	 * @param childIndex - Index of child
+	 * @return index of parent
+	 */
 	private final int parent(int childIndex) {
 		return (childIndex-1)/2;
 	}
@@ -238,7 +291,7 @@ public class PriorityQueue<E> implements Iterator<E>{
 
 
 	/**
-	 * O(1) -> Minimum element is Constant
+	 * O(1)
 	 * @return - Next element in the heap
 	 */
 	@Override

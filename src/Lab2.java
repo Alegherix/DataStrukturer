@@ -4,6 +4,11 @@ import java.util.*;
 
 public class Lab2 {
 
+	/**
+	 * Used for creating an Order book in text format
+	 * @param commands - String array of orders to parse into the Order Book
+	 * @return - Order book in the form of a string
+	 */
 	public static String pureMain(String[] commands) {
 		StringBuilder sb = new StringBuilder();
 
